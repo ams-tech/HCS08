@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace HCS08Lib.Memory
 {
-    public class Register : MemoryByte
+    public class Register : MemorySpace
     {
-        
+        public Register(uint memory_size) : base(memory_size) { }
     }
 }

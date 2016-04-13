@@ -6,31 +6,30 @@ using System.Threading.Tasks;
 
 namespace HCS08Lib.Memory
 {
-    public class MemorySpace
+    public abstract class MemorySpace
     {
-        static int MEMORY_SPACE_SIZE = 0xFFFF;
-        MemoryByte[] memory_space = new MemoryByte[MEMORY_SPACE_SIZE];
+        protected byte[] memory_space;
 
-        public MemorySpace(MemoryByte[] memory)
+        public MemorySpace(uint memory_size)
         {
-
+            memory_space = new byte[memory_size];
         }
 
-        public byte this[UInt16 i]
+        public virtual byte this[UInt16 i]
         {
             get
             {
-                return memory_space[i].value;
+                return memory_space[i];
             }
             set
             {
-                memory_space[i].value = value;
+                memory_space[i] = value;
             }
         }
 
         public int Length
         {
-            get { return MEMORY_SPACE_SIZE; }
+            get { return memory_space.Length; }
         }
     }
 }

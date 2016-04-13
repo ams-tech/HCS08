@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 
 namespace HCS08Lib.Memory
 {
-    public abstract class MemoryByte
+    class NullMemory : MemorySpace
     {
-        protected byte my_value = 0xFF;
+        public static byte NULL_BYTE_VALUE = 0xFF;
 
-        public virtual byte value
+        public NullMemory(uint memory_size) : base(memory_size) { }
+
+        public override byte this[ushort i]
         {
             get
             {
-                return my_value;
+                return NULL_BYTE_VALUE;
             }
-
             set
             {
-                my_value = value;
             }
         }
     }

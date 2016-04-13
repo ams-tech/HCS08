@@ -6,21 +6,28 @@ using System.Threading.Tasks;
 
 namespace HCS08Lib.Memory
 {
-    public class Flash : MemoryByte
+    public class Flash : MemorySpace
     {
-        public override byte value
+        public Flash(uint memory_size) : base(memory_size) { }
+
+        public override byte this[ushort i]
         {
-            set {}
+            set
+            {
+            }
         }
 
-        public void Erase()
+        public void Erase(uint start_offset, uint len)
         {
-            my_value = 0xFF;
+            for(uint i = start_offset; i < (start_offset + len); i++)
+            {
+                memory_space[i] = 0xFF;
+            }
         }
 
-        public void WriteValue(byte b)
+        public void WriteValue(uint offset, byte value)
         {
-            my_value &= (byte)~b;
+            memory_space[offset] &= (byte)~value;
         }
     }
 }

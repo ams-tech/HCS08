@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsoleInterface.cs" />
+    <Compile Include="Core\Registers.cs" />
     <Compile Include="Memory\CoreMemory.cs" />
     <Compile Include="Memory\Flash.cs" />
     <Compile Include="HCS08KS32.cs" />

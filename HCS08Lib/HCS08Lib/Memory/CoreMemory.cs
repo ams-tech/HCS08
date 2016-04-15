@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HCS08Lib.Memory
 {
-    class CoreMemory
+    public class CoreMemory
     {
         public static int CORE_MEMORY_SPACE_SIZE = 0x10000;
 

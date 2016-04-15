@@ -41,10 +41,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsoleInterface.cs" />
+    <Compile Include="Core\Addressing\DataAccess.cs" />
+    <Compile Include="Core\Addressing\Direct.cs" />
+    <Compile Include="Core\Addressing\Extended.cs" />
+    <Compile Include="Core\Addressing\Inherent.cs" />
     <Compile Include="Core\Registers.cs" />
     <Compile Include="Memory\CoreMemory.cs" />
     <Compile Include="Memory\Flash.cs" />
-    <Compile Include="HCS08KS32.cs" />
+    <Compile Include="MC9S08KS32.cs" />
     <Compile Include="Memory\MemorySpace.cs" />
     <Compile Include="Memory\NullMemory.cs" />
     <Compile Include="Memory\RAM.cs" />

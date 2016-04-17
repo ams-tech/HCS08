@@ -9,7 +9,12 @@ namespace HCS08Lib.Core.Addressing
 {
     public abstract class DataAccess
     {
+        public abstract byte DataLength
+        {
+            get;
+        }
+
         //Offset is the first byte after the instruction i.e. the first byte that's fed into the MMU
-        public abstract byte GetOperand(Memory.CoreMemory mem, UInt16 offset);
+        public abstract byte GetOperand(Memory.CoreMemory mem, UInt16 offset, Registers reg);
     }
 }

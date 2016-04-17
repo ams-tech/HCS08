@@ -7,7 +7,7 @@ using HCS08Lib.Memory;
 
 namespace HCS08Lib.Core.Addressing
 {
-    public class Direct : DataAccess
+    public class Immediate : DataAccess
     {
         public override byte DataLength
         {
@@ -17,9 +17,9 @@ namespace HCS08Lib.Core.Addressing
             }
         }
 
-        public override byte GetOperand(CoreMemory mem, ushort offset, Registers reg)
+        public override byte GetOperand(CoreMemory mem, UInt16 offset, Registers reg)
         {
-            return mem[mem[offset]];
+            return mem[offset];
         }
     }
 }

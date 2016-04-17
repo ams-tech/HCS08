@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HCS08Lib.Core
 {
-    class Registers
+    public class Registers
     {
         public byte A;
         public byte H;

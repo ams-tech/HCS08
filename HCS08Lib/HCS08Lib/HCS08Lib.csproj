@@ -44,7 +44,8 @@
     <Compile Include="Core\Addressing\DataAccess.cs" />
     <Compile Include="Core\Addressing\Direct.cs" />
     <Compile Include="Core\Addressing\Extended.cs" />
-    <Compile Include="Core\Addressing\Inherent.cs" />
+    <Compile Include="Core\Addressing\Immediate.cs" />
+    <Compile Include="Core\Addressing\Indexed.cs" />
     <Compile Include="Core\Registers.cs" />
     <Compile Include="Memory\CoreMemory.cs" />
     <Compile Include="Memory\Flash.cs" />

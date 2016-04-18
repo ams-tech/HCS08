@@ -13,7 +13,7 @@ namespace HCS08Lib.Core
         public byte X;
         public UInt16 SP; //Stack Pointer
         
-        public class ConditionCodes
+        public struct ConditionCodes
         {
             public bool V; //Two's complement Overflow
             public bool H; // Half-carry (from bit 3)

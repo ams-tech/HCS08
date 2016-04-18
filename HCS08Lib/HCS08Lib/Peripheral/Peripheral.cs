@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HCS08Lib.Peripheral
 {
-    public abstract class iCPU
+    public abstract class iRegister
     {
         public abstract byte Value
         {
@@ -24,9 +24,9 @@ namespace HCS08Lib.Peripheral
 
     public abstract class Peripheral
     {
-        List<iCPU> CPURegisters = new List<iCPU>();
+        protected List<iRegister> CPURegisters = new List<iRegister>();
 
-        public List<iCPU> GetCPURegisters()
+        public List<iRegister> GetCPURegisters()
         {
             return CPURegisters;
         }

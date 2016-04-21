@@ -29,5 +29,10 @@ namespace HCS08Lib.Memory
         {
             memory_space[offset] &= (byte)~value;
         }
+
+        public void WriteValue(uint offset, byte[] value)
+        {
+            Array.Copy(value, 0, memory_space, offset, value.Length);
+        }
     }
 }

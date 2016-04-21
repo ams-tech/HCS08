@@ -54,6 +54,7 @@
     <Compile Include="Memory\NullMemory.cs" />
     <Compile Include="Memory\RAM.cs" />
     <Compile Include="Memory\Register.cs" />
+    <Compile Include="Core\Vector.cs" />
     <Compile Include="Peripheral\Clock.cs" />
     <Compile Include="Peripheral\Peripheral.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

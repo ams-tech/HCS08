@@ -11,7 +11,7 @@ namespace HCS08Lib.Memory
         public static int CORE_MEMORY_SPACE_SIZE = 0x10000;
 
         List<MemorySpace> memory = new List<MemorySpace>();
-        int length = 0;
+        public int Length = 0;
 
         public CoreMemory() { }
 
@@ -25,11 +25,11 @@ namespace HCS08Lib.Memory
 
         public void AddMemorySpace(MemorySpace s)
         {
-            if ((length + s.Length) > CORE_MEMORY_SPACE_SIZE)
+            if ((Length + s.Length) > CORE_MEMORY_SPACE_SIZE)
                 throw new InvalidOperationException("Memory space would exceed " + CORE_MEMORY_SPACE_SIZE.ToString());
             else
             {
-                length += s.Length;
+                Length += s.Length;
                 memory.Add(s);
             }
         }
@@ -38,7 +38,7 @@ namespace HCS08Lib.Memory
         {
             get
             {
-                if (addr < length)
+                if (addr < Length)
                 {
                     foreach (MemorySpace s in memory)
                     {
@@ -52,7 +52,7 @@ namespace HCS08Lib.Memory
             }
             set
             {
-                if (addr < length)
+                if (addr < Length)
                 {
                     foreach (MemorySpace s in memory)
                     {
@@ -68,5 +68,4 @@ namespace HCS08Lib.Memory
                 throw new IndexOutOfRangeException();
             }
         }
-    }
 }

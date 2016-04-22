@@ -12,6 +12,13 @@ namespace HCS08Lib.Core
         public byte H;
         public byte X;
         public UInt16 SP; //Stack Pointer
+        public UInt16 PC; //Program Counter
+        Vector ResetVector;
+
+        public Registers(Vector reset_vector)
+        {
+            ResetVector = reset_vector;
+        }
         
         public struct ConditionCodes
         {
@@ -90,6 +97,16 @@ namespace HCS08Lib.Core
                 X = (byte)(value & 0xFF);
                 H = (byte)((value >> 8) & 0xFF);
             }
+        }
+
+        public void Reset()
+        {
+            A = 0xFF;
+            H = 0xFF;
+            X = 0xFF;
+            SP = 0xFFFF;
+            CCR = 0xFF;
+            PC = ResetVector.Payload;
         }
     }
 }

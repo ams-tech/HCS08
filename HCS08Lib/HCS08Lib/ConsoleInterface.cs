@@ -13,3 +13,4 @@ namespace HCS08Lib
         string ReadLine();
     }
 }
+                                                            

@@ -68,4 +68,5 @@ namespace HCS08Lib.Memory
                 throw new IndexOutOfRangeException();
             }
         }
+    }
 }

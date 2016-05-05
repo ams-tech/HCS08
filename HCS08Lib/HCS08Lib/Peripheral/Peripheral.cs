@@ -3,25 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace HCS08Lib.Peripheral
 {
-    public class iRegister
-    {
-        public static uint NUM_BITS = 8;
+    public class PeripheralRegisterInfo
+    { 
 
-        protected byte current_value;
-        UInt16 register_offset;
-        
-        public delegate byte OnGetDelegate(iRegister register);
-        public delegate void OnSetDelegate(iRegister register, byte new_value);
+        public struct RegisterDescription
+        {
+            public string short_name;
+            public string long_name;
+            public string description;
 
-        protected OnGetDelegate OnGetValue = null;
-        protected OnSetDelegate OnSetValue = null;
+            public RegisterDescription(string _short_name, string _long_name, string _description)
+            {
+                short_name = _short_name;
+                long_name = _long_name;
+                description = _description;
+            }
+        }
 
-        public iRegister() { }
-
-        public struct Bits
+        public struct BitDescription
         {
             public uint num_bits;
             public string short_name;
@@ -29,7 +32,7 @@ namespace HCS08Lib.Peripheral
             public string description;
             public string values;
 
-            public Bits(uint _num_bits, string _short_name, string _long_name, string _description, string _values)
+            public BitDescription(uint _num_bits, string _short_name, string _long_name, string _description, string _values)
             {
                 num_bits = _num_bits;
                 short_name = _short_name;
@@ -38,38 +41,102 @@ namespace HCS08Lib.Peripheral
                 values = _values;
             }
 
-            public static Bits NULL_BIT = new Bits(
+            public static BitDescription NULL_BIT = new BitDescription(
                 1, "NULL", "Unused Bit", "This bit has no assigned value", "Always 1 when read.  Writes have no effect.");
         }
 
-        List<Bits> my_bits = new List<Bits>();
-        uint num_bits = 0;
-        
-        public void RegisterBits(Bits bits)
+        public static XmlElement BlankXmlElement(XmlDocument doc)
         {
-            //Note that bits need to be registered in order from highest to lowest (7 to 0)
-            if ((bits.num_bits + num_bits) >= NUM_BITS)
-                throw new InvalidOperationException();
-            num_bits += bits.num_bits;
-            my_bits.Add(bits);
-        }
-
-        public iRegister(UInt16 offset, OnGetDelegate on_get, OnSetDelegate on_set)
-        {
-            OnGetValue = on_get;
-            OnSetValue = on_set;
-            register_offset = offset;
-        }
-
-        public iRegister(UInt16 offset, OnGetDelegate on_get, OnSetDelegate on_set, List<Bits> _bits)
-        {
-            OnGetValue = on_get;
-            OnSetValue = on_set;
-            register_offset = offset;
-            foreach (var bit in _bits)
+            XmlElement retval = doc.CreateElement(nameof(PeripheralRegisterInfo));
+            XmlElement register_description = doc.CreateElement(nameof(RegisterDescription));
+            XmlElement bit_description = doc.CreateElement(nameof(BitDescription));
+            
+            foreach (var field in typeof(RegisterDescription).GetFields())
             {
-                RegisterBits(bit);
+                register_description.AppendChild(doc.CreateElement(field.Name));
             }
+
+            foreach (var field in typeof(BitDescription).GetFields())
+            {
+                bit_description.AppendChild(doc.CreateElement(field.Name));
+            }
+
+            retval.AppendChild(register_description);
+            retval.AppendChild(bit_description);
+
+            return retval;
+        }
+
+        public static PeripheralRegisterInfo ParseXmlNode(XmlNode root)
+        {
+            RegisterDescription? register_descritpion = null;
+            List<BitDescription> bit_descriptions = new List<BitDescription>();
+
+            if (root.Name != nameof(PeripheralRegisterInfo))
+                throw new ArgumentException();
+            foreach (XmlNode child in root.ChildNodes)
+            {
+                if (child.Name == nameof(RegisterDescription))
+                {
+                    if (register_descritpion != null)
+                        throw new ArgumentException();
+                    register_descritpion = new RegisterDescription(
+                        child.SelectSingleNode("/" + nameof(RegisterDescription.short_name)).Value,
+                        child.SelectSingleNode("/" + nameof(RegisterDescription.long_name)).Value,
+                        child.SelectSingleNode("/" + nameof(RegisterDescription.description)).Value);
+                }
+                else if (child.Name == nameof(BitDescription))
+                {
+                    bit_descriptions.Add(new BitDescription(
+                        uint.Parse(child.SelectSingleNode("/" + nameof(BitDescription.num_bits)).Value),
+                        child.SelectSingleNode("/" + nameof(BitDescription.short_name)).Value,
+                        child.SelectSingleNode("/" + nameof(BitDescription.long_name)).Value,
+                        child.SelectSingleNode("/" + nameof(BitDescription.description)).Value,
+                        child.SelectSingleNode("/" + nameof(BitDescription.values)).Value));
+                }
+                else
+                    throw new ArgumentException();
+            }
+
+            return new PeripheralRegisterInfo(register_descritpion.Value, bit_descriptions);
+        }
+
+        RegisterDescription register_info;
+        List<BitDescription> bit_info;
+        private RegisterDescription? register_descritpion;
+        private List<BitDescription> bit_descriptions;
+
+        public PeripheralRegisterInfo(RegisterDescription reg, List<BitDescription> bit)
+        {
+            register_info = reg;
+            bit_info = bit;
+        }
+
+    }
+
+    public class PeripheralRegister
+    {
+        public static uint NUM_BITS = 8;
+
+        protected byte current_value;
+        UInt16 register_offset;
+        
+        public delegate byte OnGetDelegate(PeripheralRegister register);
+        public delegate void OnSetDelegate(PeripheralRegister register, byte new_value);
+
+        protected OnGetDelegate OnGetValue = null;
+        protected OnSetDelegate OnSetValue = null;
+
+        protected PeripheralRegisterInfo RegisterInfo;
+
+        public PeripheralRegister() { }
+
+        public PeripheralRegister(UInt16 offset, PeripheralRegisterInfo info, OnGetDelegate on_get, OnSetDelegate on_set)
+        {
+            OnGetValue = on_get;
+            OnSetValue = on_set;
+            register_offset = offset;
+            RegisterInfo = info;
         }
 
         public virtual byte Value
@@ -90,7 +157,7 @@ namespace HCS08Lib.Peripheral
             }
         }
 
-        public UInt16 RegisterOffset
+        public UInt16 AddressOffset
         {
             //Effectively becomes the address when used for low-page registers
             //Effectively gets an offset of 0x1800 when used for high-page registers
@@ -103,12 +170,12 @@ namespace HCS08Lib.Peripheral
 
     public abstract class Peripheral
     {
-        protected virtual List<iRegister> CPURegisters
+        protected virtual List<PeripheralRegister> CPURegisters
         {
-            get { return new List<iRegister>(); }
+            get { return new List<PeripheralRegister>(); }
         }
 
-        public List<iRegister> GetCPURegisters()
+        public List<PeripheralRegister> GetCPURegisters()
         {
             return CPURegisters;
         }

@@ -8,21 +8,21 @@ namespace HCS08Lib.Memory
 {
     public class Register : MemorySpace
     {
-        Dictionary<UInt16, Peripheral.iRegister> peripherals = new Dictionary<UInt16, Peripheral.iRegister>();
+        Dictionary<UInt16, Peripheral.PeripheralRegister> peripherals = new Dictionary<UInt16, Peripheral.PeripheralRegister>();
 
         public Register(uint memory_size) : base(memory_size) { }
 
         public void AddPeripheral(Peripheral.Peripheral p)
         {
             //Note that peripherals isn't thread protected.  Add all of these before execution starts
-            foreach (Peripheral.iRegister icpu in p.GetCPURegisters())
+            foreach (Peripheral.PeripheralRegister icpu in p.GetCPURegisters())
             {
-                if (peripherals.ContainsKey(icpu.RegisterOffset))
-                    throw new InvalidOperationException("Register space already has a peripheral at offset " + icpu.RegisterOffset);
-                else if (icpu.RegisterOffset >= Length)
+                if (peripherals.ContainsKey(icpu.AddressOffset))
+                    throw new InvalidOperationException("Register space already has a peripheral at offset " + icpu.AddressOffset);
+                else if (icpu.AddressOffset >= Length)
                     throw new IndexOutOfRangeException();
                 else
-                    peripherals[icpu.RegisterOffset] = icpu;
+                    peripherals[icpu.AddressOffset] = icpu;
             }
         }
 
